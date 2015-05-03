@@ -39,7 +39,7 @@ A datacenter definition must include a *name* and a *connector*.
 
 The *connector* field is the URL to the genisys connector used to manage compute resources inside this datacenter.
 
-You can specify an optional file called *datacenter.py* at the root of the project and use it to define datacenters using the format defined above. 
+You can specify an optional file called *datacenters.py* at the root of the project and use it to define datacenters using the format defined above. 
 
 ## HTTP API
 
