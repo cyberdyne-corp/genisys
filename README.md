@@ -109,7 +109,7 @@ The *connector* field specifies the URL to a genisys connector that will manage 
 Example:
 
 ````
-$ http PUT :7051/datacenter/local connector="http://localhost:7052"
+$ http PUT :7001/datacenter/local connector="http://localhost:7052"
 ````
 
 ### service HTTP endpoint
