@@ -18,4 +18,4 @@ def downscale_service(service_name, datacenter_definition):
                              '/kill'])
     r = requests.get(connector_url)
     if r.status_code != 200:
-        print("An error occured with service upscaling.")
+        print("An error occured with service downscaling.")
