@@ -1,4 +1,4 @@
-# genysis
+# genisys
 
 This component is in charge of the compute resource management.
 
