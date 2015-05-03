@@ -51,10 +51,8 @@ Note: The examples use the httpie CLI to query the API, see: https://github.com/
 
 The following endpoints are exposed:
 
-* [/datacenter](#datacenter-1) : Register a new datacenter defintion
+* [/datacenter](#datacenter-1) : Register a new datacenter definition
 * [/datacenter/\<datacenter_name\>](#datacenterdatacenter_name) : Retrieve or update a datacenter definition
-* [/datacenter/\<datacenter_name\>/start](#datacenterdatacenter_namestart) : Start a new container for a datacenter
-* [/datacenter/\<datacenter_name\>/kill](#datacenterdatacenter_namekill) : Kill a container associated to a datacenter
 
 #### /datacenter
 
