@@ -113,3 +113,54 @@ Example:
 ````
 $ http PUT :7051/datacenter/helloworld image="panamax/hello-world-php:latest" command="/run.sh"
 ````
+
+### service HTTP endpoint
+
+The following endpoints are exposed:
+
+* [/service/\<service_name\>/upscale](#serviceservice_namestart) : Upscale a service by adding an associated compute resource.
+* [/service/\<service_name\>/downscale](#serviceservice_namekill) : Downscale a service by removing an associated compute resource.
+
+#### /service/\<service_name\>/upscale
+
+This endpoint is used to create a new compute resource associated to the service.
+
+It expects a JSON request body to be POST. The request body must look like:
+
+````
+{
+	"datacenter": "datacenter_name",
+}
+````
+
+The *datacenter* field is mandatory.
+
+The *datacenter* field is used to identify the datacenter in which the compute resource will be created.
+
+Example:
+
+````
+$ http POST :7001/service/myService/upscale datacenter="local"
+````
+
+#### /service/\<service_name\>/downscale
+
+This endpoint is used to remove a running compute resource associated to the service.
+
+It expects a JSON request body to be POST. The request body must look like:
+
+````
+{
+	"datacenter": "datacenter_name",
+}
+````
+
+The *datacenter* field is mandatory.
+
+The *datacenter* field is used to identify the datacenter in which the compute resource will be removed.
+
+Example:
+
+````
+$ http POST :7001/service/myService/downscale datacenter="local"
+````

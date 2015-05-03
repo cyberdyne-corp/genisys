@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from bottle import run, get, post, put, abort, request
+from connector import upscale_service, downscale_service
 import errno
 
 
@@ -55,6 +56,38 @@ def retrieve_datacenter_definition(datacenter_name):
         return datacenter_definition
     except KeyError:
         abort(501, "Undefined datacenter: %s." % datacenter_name)
+
+
+@post('/service/<service_name>/upscale')
+def upscale(service_name):
+    data = request.json
+    if not data:
+        abort(400, 'No data received')
+    try:
+        datacenter_name = data["datacenter"]
+    except KeyError:
+        abort(400, 'Missing parameters.')
+    try:
+        datacenter_definition = datacenters[datacenter_name]
+    except KeyError:
+        abort(501, "Undefined datacenter: %s." % datacenter_name)
+    upscale_service(service_name, datacenter_definition)
+
+
+@post('/service/<service_name>/downscale')
+def downscale(service_name):
+    data = request.json
+    if not data:
+        abort(400, 'No data received')
+    try:
+        datacenter_name = data["datacenter"]
+    except KeyError:
+        abort(400, 'Missing parameters.')
+    try:
+        datacenter_definition = datacenters[datacenter_name]
+    except KeyError:
+        abort(501, "Undefined datacenter: %s." % datacenter_name)
+    downscale_service(service_name, datacenter_definition)
 
 
 if __name__ == '__main__':
