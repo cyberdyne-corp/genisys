@@ -76,7 +76,7 @@ The *connector* field specifies the URL to a genisys connector that will manage 
 Example:
 
 ````
-$ http POST :7051/datacenter name="localdc" connector="http://localhost:7051"
+$ http POST :7001/datacenter name="localdc" connector="http://localhost:7051"
 ````
 
 #### /datacenter/\<datacenter_name\>
@@ -109,7 +109,7 @@ The *connector* field specifies the URL to a genisys connector that will manage 
 Example:
 
 ````
-$ http PUT :7051/datacenter/helloworld image="panamax/hello-world-php:latest" command="/run.sh"
+$ http PUT :7051/datacenter/local connector="http://localhost:7052"
 ````
 
 ### service HTTP endpoint
