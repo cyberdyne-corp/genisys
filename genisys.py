@@ -6,56 +6,56 @@ from connector import upscale_service, downscale_service
 import errno
 
 
-def load_datacenters_from_file(filename):
-    datacenters = {}
+def load_computes_from_file(filename):
+    computes = {}
     try:
         exec(compile(open(filename, "rb").read(), filename, 'exec'),
              {},
-             datacenters)
+             computes)
     except OSError as e:
         if e.errno == errno.ENOENT:
-            print("No datacenters definitions file provided.")
+            print("No compute definitions file provided.")
         else:
             print("An error occured while trying to read \
-                datacenters definitions file. Aborting.")
+                compute definitions file. Aborting.")
             raise
-    return datacenters
+    return computes
 
 
-@post('/datacenter')
-def create_datacenter_definition():
+@post('/compute')
+def create_compute_definition():
     data = request.json
     if not data:
         abort(400, 'No data received')
     try:
-        datacenter_name = data["name"]
-        datacenters[datacenter_name] = {}
-        datacenters[datacenter_name]["name"] = datacenter_name
-        datacenters[datacenter_name]["connector"] = data["connector"]
+        compute_name = data["name"]
+        computes[compute_name] = {}
+        computes[compute_name]["name"] = compute_name
+        computes[compute_name]["connector"] = data["connector"]
     except KeyError:
         abort(400, 'Missing parameters.')
 
 
-@put('/datacenter/<datacenter_name>')
-def update_datacenter_definition(datacenter_name):
+@put('/compute/<compute_name>')
+def update_compute_definition(compute_name):
     data = request.json
     if not data:
         abort(400, 'No data received')
     try:
-        datacenters[datacenter_name] = {}
-        datacenters[datacenter_name]["name"] = datacenter_name
-        datacenters[datacenter_name]["connector"] = data["connector"]
+        computes[compute_name] = {}
+        computes[compute_name]["name"] = compute_name
+        computes[compute_name]["connector"] = data["connector"]
     except KeyError:
         abort(400, 'Missing parameter.')
 
 
-@get('/datacenter/<datacenter_name>')
-def retrieve_datacenter_definition(datacenter_name):
+@get('/compute/<compute_name>')
+def retrieve_compute_definition(compute_name):
     try:
-        datacenter_definition = datacenters[datacenter_name]
-        return datacenter_definition
+        compute_definition = computes[compute_name]
+        return compute_definition
     except KeyError:
-        abort(501, "Undefined datacenter: %s." % datacenter_name)
+        abort(501, "Undefined compute: %s." % compute_name)
 
 
 @post('/service/<service_name>/upscale')
@@ -64,14 +64,14 @@ def upscale(service_name):
     if not data:
         abort(400, 'No data received')
     try:
-        datacenter_name = data["datacenter"]
+        compute_name = data["compute"]
     except KeyError:
         abort(400, 'Missing parameters.')
     try:
-        datacenter_definition = datacenters[datacenter_name]
+        compute_definition = computes[compute_name]
     except KeyError:
-        abort(501, "Undefined datacenter: %s." % datacenter_name)
-    upscale_service(service_name, datacenter_definition)
+        abort(501, "Undefined compute: %s." % compute_name)
+    upscale_service(service_name, compute_definition)
 
 
 @post('/service/<service_name>/downscale')
@@ -80,16 +80,16 @@ def downscale(service_name):
     if not data:
         abort(400, 'No data received')
     try:
-        datacenter_name = data["datacenter"]
+        compute_name = data["compute"]
     except KeyError:
         abort(400, 'Missing parameters.')
     try:
-        datacenter_definition = datacenters[datacenter_name]
+        compute_definition = computes[compute_name]
     except KeyError:
-        abort(501, "Undefined datacenter: %s." % datacenter_name)
-    downscale_service(service_name, datacenter_definition)
+        abort(501, "Undefined compute: %s." % compute_name)
+    downscale_service(service_name, compute_definition)
 
 
 if __name__ == '__main__':
-    datacenters = load_datacenters_from_file("datacenters.py")
+    computes = load_computes_from_file("computes.py")
     run(host='localhost', port=7001)

@@ -14,19 +14,19 @@ $ pip install -r requirements.txt
 
 ## Run
 
-Start the adapter:
+Start the component:
 
 ````
 $ python genisys.py
 ````
 
-## Datacenter definition
+## Compute definition
 
-To manage services, genisys provides a simple datacenter definition format.
+To manage computes, genisys provides a simple compute definition format.
 
 It defines a link to a connector that will manage specific compute resources (Docker containers, AWS instances...) associated with a service.
 
-A datacenter definition looks like:
+A compute definition looks like:
 
 ````
 myDC = {
@@ -35,53 +35,53 @@ myDC = {
 }
 ````
 
-A datacenter definition must include a *name* and a *connector*.
+A compute definition must include a *name* and a *connector*.
 
-The *connector* field is the URL to the genisys connector used to manage compute resources inside this datacenter.
+The *connector* field is the URL to the genisys connector used to manage compute resources inside this compute.
 
-You can specify an optional file called *datacenters.py* at the root of the project and use it to define datacenters using the format defined above. 
+You can specify an optional file called *computes.py* at the root of the project and use it to define computes using the format defined above. 
 
 ## HTTP API
 
-Genisys exposes a HTTP API. It can be used to perform CRUD actions on datacenters and trigger remote procedure calls on services.
+Genisys exposes a HTTP API. It can be used to perform CRUD actions on computes and trigger remote procedure calls on services.
 
 Note: The examples use the httpie CLI to query the API, see: https://github.com/jakubroztocil/httpie
 
-### datacenter HTTP endpoint
+### compute HTTP endpoint
 
 The following endpoints are exposed:
 
-* [/datacenter](#datacenter-1) : Register a new datacenter definition
-* [/datacenter/\<datacenter_name\>](#datacenterdatacenter_name) : Retrieve or update a datacenter definition
+* [/compute](#compute-1) : Register a new compute definition
+* [/compute/\<compute_name\>](#computecompute_name) : Retrieve or update a compute definition
 
-#### /datacenter
+#### /compute
 
-This endpoint is used to create a new datacenter definition.
+This endpoint is used to create a new compute definition.
 
 It expects a JSON request body to be POST. The request body must look like:
 
 ````
 {
-	"name": "datacenter_name",
+	"name": "compute_name",
 	"connector": "http://connector.domain:port",
 }
 ````
 
 All fields are mandatory.
 
-The *datacenter* field is used to identify the datacenter.
+The *compute* field is used to identify the compute.
 
 The *connector* field specifies the URL to a genisys connector that will manage the backend.
 
 Example:
 
 ````
-$ http POST :7001/datacenter name="localdc" connector="http://localhost:7051"
+$ http POST :7001/compute name="localdc" connector="http://localhost:7051"
 ````
 
-#### /datacenter/\<datacenter_name\>
+#### /compute/\<compute_name\>
 
-This endpoint is used to retrieve a datacenter definition or to update it.
+This endpoint is used to retrieve a compute definition or to update it.
 
 It supports the following methods: PUT and GET.
 
@@ -109,7 +109,7 @@ The *connector* field specifies the URL to a genisys connector that will manage 
 Example:
 
 ````
-$ http PUT :7001/datacenter/local connector="http://localhost:7052"
+$ http PUT :7001/compute/local connector="http://localhost:7052"
 ````
 
 ### service HTTP endpoint
@@ -127,18 +127,18 @@ It expects a JSON request body to be POST. The request body must look like:
 
 ````
 {
-	"datacenter": "datacenter_name",
+	"compute": "compute_name",
 }
 ````
 
-The *datacenter* field is mandatory.
+The *compute* field is mandatory.
 
-The *datacenter* field is used to identify the datacenter in which the compute resource will be created.
+The *compute* field is used to identify the compute in which the compute resource will be created.
 
 Example:
 
 ````
-$ http POST :7001/service/myService/upscale datacenter="local"
+$ http POST :7001/service/myService/upscale compute="local"
 ````
 
 #### /service/\<service_name\>/downscale
@@ -149,16 +149,16 @@ It expects a JSON request body to be POST. The request body must look like:
 
 ````
 {
-	"datacenter": "datacenter_name",
+	"compute": "compute_name",
 }
 ````
 
-The *datacenter* field is mandatory.
+The *compute* field is mandatory.
 
-The *datacenter* field is used to identify the datacenter in which the compute resource will be removed.
+The *compute* field is used to identify the compute in which the compute resource will be removed.
 
 Example:
 
 ````
-$ http POST :7001/service/myService/downscale datacenter="local"
+$ http POST :7001/service/myService/downscale compute="local"
 ````
