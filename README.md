@@ -43,7 +43,7 @@ You can specify an optional file called *datacenters.py* at the root of the proj
 
 ## HTTP API
 
-Genisys exposes a RESTful HTTP API. It can be used to perform CRUD actions on datacenters.
+Genisys exposes a HTTP API. It can be used to perform CRUD actions on datacenters and trigger remote procedure calls on services.
 
 Note: The examples use the httpie CLI to query the API, see: https://github.com/jakubroztocil/httpie
 
