@@ -2,7 +2,7 @@
 
 This component is in charge of the compute resource management.
 
-It can upscale/downscale a service by sending actions to compute backend connectors. 
+It can upscale/downscale a service by sending actions to compute backend connectors.
 
 ## Setup
 
@@ -29,8 +29,8 @@ It defines a link to a connector that will manage specific compute resources (Do
 A compute definition looks like:
 
 ````
-myDC = {
-	"name": "myDC",
+myCompute = {
+	"name": "myCompute",
 	"connector": "http://localhost:7051"
 }
 ````
@@ -39,7 +39,7 @@ A compute definition must include a *name* and a *connector*.
 
 The *connector* field is the URL to the genisys connector used to manage compute resources inside this compute.
 
-You can specify an optional file called *computes.py* at the root of the project and use it to define computes using the format defined above. 
+You can specify an optional file called *computes.py* at the root of the project and use it to define computes using the format defined above.
 
 ## HTTP API
 
@@ -89,7 +89,7 @@ When hitting the endpoint with a GET, it returns a JSON body like this:
 
 ````
 {
-    "connector": "http://localhost:7051", 
+    "connector": "http://localhost:7051",
     "name": "localdc"
 }
 ````
