@@ -2,24 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from bottle import run, get, post, put, abort, request
-from connector import upscale_service, downscale_service, scale_service
-import errno
-
-
-def load_computes_from_file(filename):
-    computes = {}
-    try:
-        exec(compile(open(filename, "rb").read(), filename, 'exec'),
-             {},
-             computes)
-    except OSError as e:
-        if e.errno == errno.ENOENT:
-            print("No compute definitions file provided.")
-        else:
-            print("An error occured while trying to read \
-                compute definitions file. Aborting.")
-            raise
-    return computes
+from utils import load_computes_from_file
+from intelligency import select_compute_definition
+from connector import scale_service
 
 
 @get('/compute')
@@ -80,7 +65,7 @@ def scale(service_name):
         if compute_name is not None:
             compute_definition = computes[compute_name]
         else:
-            compute_definition = next(iter(computes.values()))
+            compute_definition = select_compute_definition(computes)
     except KeyError:
         abort(501, "Undefined compute: %s." % compute_name)
     scale_service(compute_definition, service_name, resource_number)
