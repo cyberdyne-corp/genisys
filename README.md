@@ -51,14 +51,29 @@ Note: The examples use the httpie CLI to query the API, see: https://github.com/
 
 The following endpoints are exposed:
 
-* [/compute](#compute-1) : Register a new compute definition
+* [/compute](#compute-1) : List compute definitions or register a new compute definition
 * [/compute/\<compute_name\>](#computecompute_name) : Retrieve or update a compute definition
 
 #### /compute
 
-This endpoint is used to create a new compute definition.
+This endpoint is used to list existing compute definitions or to create a new compute definition.
 
-It expects a JSON request body to be POST. The request body must look like:
+It supports the following methods: POST and GET.
+
+When hitting the endpoint with a GET, it returns a JSON body like this:
+
+{
+  "compute_nameA": {
+		"name": "compute_nameA",
+		"connector": "http://connector.domain:port",
+  },
+	"compute_nameB": {
+		"name": "compute_nameB",
+		"connector": "http://other-connector.domain:port",
+  }
+}
+
+When hitting the endpoint with a POST, it expects a JSON request body that must look like:
 
 ````
 {
