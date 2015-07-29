@@ -2,7 +2,7 @@
 
 This component is in charge of the compute resource management.
 
-It can upscale/downscale a service by sending actions to compute backend connectors.
+It can scale a service by sending actions to compute backend connectors.
 
 ## Setup
 
@@ -116,49 +116,28 @@ $ http PUT :7001/compute/local connector="http://localhost:7052"
 
 The following endpoints are exposed:
 
-* [/service/\<service_name\>/upscale](#serviceservice_namestart) : Upscale a service by adding an associated compute resource.
-* [/service/\<service_name\>/downscale](#serviceservice_namekill) : Downscale a service by removing an associated compute resource.
+* [/service/\<service_name\>/scale](#serviceservice_namescale) : Ensure that a specific number of compute resource is running for a service.
 
-#### /service/\<service_name\>/upscale
+#### /service/\<service_name\>/scale
 
-This endpoint is used to create a new compute resource associated to the service.
+This endpoint is used to ensure that specific number of compute resources associated to a service are running.
 
 It expects a JSON request body to be POST. The request body must look like:
 
 ````
 {
-	"compute": "compute_name",
+	"number": number_of_compute_resources,
+	"compute": "compute_name"
 }
 ````
 
-The *compute* field is mandatory.
+The *number* field is mandatory.
 
 The *compute* field is used to identify the compute in which the compute resource will be created.
+If not specified, genisys will automatically pick up the first compute defined.
 
 Example:
 
 ````
-$ http POST :7001/service/myService/upscale compute="local"
-````
-
-#### /service/\<service_name\>/downscale
-
-This endpoint is used to remove a running compute resource associated to the service.
-
-It expects a JSON request body to be POST. The request body must look like:
-
-````
-{
-	"compute": "compute_name",
-}
-````
-
-The *compute* field is mandatory.
-
-The *compute* field is used to identify the compute in which the compute resource will be removed.
-
-Example:
-
-````
-$ http POST :7001/service/myService/downscale compute="local"
+$ http POST :7001/service/myService/scale number=3 compute="local"
 ````

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from bottle import run, get, post, put, abort, request
-from connector import upscale_service, downscale_service
+from connector import upscale_service, downscale_service, scale_service
 import errno
 
 
@@ -58,36 +58,27 @@ def retrieve_compute_definition(compute_name):
         abort(501, "Undefined compute: %s." % compute_name)
 
 
-@post('/service/<service_name>/upscale')
-def upscale(service_name):
+@post('/service/<service_name>/scale')
+def scale(service_name):
     data = request.json
     if not data:
         abort(400, 'No data received')
     try:
-        compute_name = data["compute"]
+        resource_number = data["number"]
     except KeyError:
         abort(400, 'Missing parameters.')
     try:
-        compute_definition = computes[compute_name]
-    except KeyError:
-        abort(501, "Undefined compute: %s." % compute_name)
-    upscale_service(service_name, compute_definition)
-
-
-@post('/service/<service_name>/downscale')
-def downscale(service_name):
-    data = request.json
-    if not data:
-        abort(400, 'No data received')
-    try:
         compute_name = data["compute"]
     except KeyError:
-        abort(400, 'Missing parameters.')
+        compute_name = None
     try:
-        compute_definition = computes[compute_name]
+        if compute_name is not None:
+            compute_definition = computes[compute_name]
+        else:
+            compute_definition = next(iter(computes.values()))
     except KeyError:
         abort(501, "Undefined compute: %s." % compute_name)
-    downscale_service(service_name, compute_definition)
+    scale_service(compute_definition, service_name, resource_number)
 
 
 if __name__ == '__main__':
