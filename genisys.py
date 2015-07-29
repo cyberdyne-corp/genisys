@@ -22,6 +22,11 @@ def load_computes_from_file(filename):
     return computes
 
 
+@get('/compute')
+def retrieve_compute_definitions():
+    return computes
+
+
 @post('/compute')
 def create_compute_definition():
     data = request.json
