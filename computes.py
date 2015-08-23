@@ -1,4 +1,4 @@
 local = {
-    "name": "local",
-    "connector": "http://localhost:7051"
+    'name': 'local',
+    'connector': 'http://localhost:7051'
 }

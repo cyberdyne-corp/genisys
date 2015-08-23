@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import threading
 from bottle import run, get, post, put, abort, request
-from utils import load_computes_from_file
+from utils import load_computes_from_file, load_configuration
 from intelligency import select_compute_definition
 from connector import scale_service
+from poller import poll_connectors
+from consul import get_services
 
 
 @get('/compute')
@@ -18,10 +21,10 @@ def create_compute_definition():
     if not data:
         abort(400, 'No data received')
     try:
-        compute_name = data["name"]
+        compute_name = data['name']
         computes[compute_name] = {}
-        computes[compute_name]["name"] = compute_name
-        computes[compute_name]["connector"] = data["connector"]
+        computes[compute_name]['name'] = compute_name
+        computes[compute_name]['connector'] = data['connector']
     except KeyError:
         abort(400, 'Missing parameters.')
 
@@ -33,8 +36,8 @@ def update_compute_definition(compute_name):
         abort(400, 'No data received')
     try:
         computes[compute_name] = {}
-        computes[compute_name]["name"] = compute_name
-        computes[compute_name]["connector"] = data["connector"]
+        computes[compute_name]['name'] = compute_name
+        computes[compute_name]['connector'] = data['connector']
     except KeyError:
         abort(400, 'Missing parameter.')
 
@@ -45,7 +48,7 @@ def retrieve_compute_definition(compute_name):
         compute_definition = computes[compute_name]
         return compute_definition
     except KeyError:
-        abort(501, "Undefined compute: %s." % compute_name)
+        abort(501, 'Undefined compute: {}.'.format(compute_name))
 
 
 @post('/service/<service_name>/scale')
@@ -54,11 +57,11 @@ def scale(service_name):
     if not data:
         abort(400, 'No data received')
     try:
-        resource_number = data["number"]
+        resource_number = data['number']
     except KeyError:
         abort(400, 'Missing parameters.')
     try:
-        compute_name = data["compute"]
+        compute_name = data['compute']
     except KeyError:
         compute_name = None
     try:
@@ -67,10 +70,27 @@ def scale(service_name):
         else:
             compute_definition = select_compute_definition(computes)
     except KeyError:
-        abort(501, "Undefined compute: %s." % compute_name)
+        abort(501, 'Undefined compute: {}.'.format(compute_name))
     scale_service(compute_definition, service_name, resource_number)
 
 
+def start_webserver(port):
+    run(host='localhost', port=port)
+
+
 if __name__ == '__main__':
-    computes = load_computes_from_file("computes.py")
-    run(host='localhost', port=7001)
+    config = load_configuration('genisys.yml')
+    computes = load_computes_from_file(config['genisys']['compute_file'])
+    services = get_services(config['consul']['host'],
+                            config['consul']['service_prefix'])
+    try:
+        api_thread_args = dict(port=config['genisys']['port'])
+        api_thread = threading.Thread(target=start_webserver,
+                                      kwargs=api_thread_args).start()
+        poller_thread_args = dict(config=config,
+                                  computes=computes,
+                                  services=services)
+        poller_thread = threading.Thread(target=poll_connectors,
+                                         kwargs=poller_thread_args).start()
+    except Exception:
+        print('The application failed to start.')

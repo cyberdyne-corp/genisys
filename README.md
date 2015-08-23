@@ -12,6 +12,31 @@ Install the requirements (assuming you got a Python >= 3.4 devel environment rea
 $ pip install -r requirements.txt
 ````
 
+## Configuration
+
+The configuration file `genisys.yml` is written in [YAML format](http://en.wikipedia.org/wiki/YAML).
+
+```yml
+genisys:
+  # Application port
+  port: 7001
+
+  # Path to compute definitions
+  compute_file: ./computes.py
+
+consul:
+  # Consul host
+  host: http://localhost:8500
+
+  # Prefix for services managed by genisys
+  service_prefix: 'skynet_'
+
+connector:
+  # How frequently to poll all connectors for service status
+  poll_interval: 15s
+
+```
+
 ## Run
 
 Start the component:
@@ -28,12 +53,12 @@ It defines a link to a connector that will manage specific compute resources (Do
 
 A compute definition looks like:
 
-````
+```python
 myCompute = {
 	"name": "myCompute",
 	"connector": "http://localhost:7051"
 }
-````
+```
 
 A compute definition must include a *name* and a *connector*.
 
@@ -62,6 +87,7 @@ It supports the following methods: POST and GET.
 
 When hitting the endpoint with a GET, it returns a JSON body like this:
 
+```json
 {
   "compute_nameA": {
 		"name": "compute_nameA",
@@ -72,15 +98,16 @@ When hitting the endpoint with a GET, it returns a JSON body like this:
 		"connector": "http://other-connector.domain:port",
   }
 }
+```
 
 When hitting the endpoint with a POST, it expects a JSON request body that must look like:
 
-````
+```json
 {
 	"name": "compute_name",
 	"connector": "http://connector.domain:port",
 }
-````
+```
 
 All fields are mandatory.
 
@@ -90,9 +117,9 @@ The *connector* field specifies the URL to a genisys connector that will manage 
 
 Example:
 
-````
+```bash
 $ http POST :7001/compute name="localdc" connector="http://localhost:7051"
-````
+```
 
 #### /compute/\<compute_name\>
 
@@ -102,20 +129,20 @@ It supports the following methods: PUT and GET.
 
 When hitting the endpoint with a GET, it returns a JSON body like this:
 
-````
+```json
 {
     "connector": "http://localhost:7051",
     "name": "localdc"
 }
-````
+```
 
 When hitting the endpoint with a PUT, it expects a JSON request body that must look like:
 
-````
+```json
 {
 	"connector": "http://localhost:7051"
 }
-````
+```
 
 The *connector* field is mandatory.
 
@@ -123,9 +150,9 @@ The *connector* field specifies the URL to a genisys connector that will manage 
 
 Example:
 
-````
+```bash
 $ http PUT :7001/compute/local connector="http://localhost:7052"
-````
+```
 
 ### service HTTP endpoint
 
@@ -139,12 +166,12 @@ This endpoint is used to ensure that specific number of compute resources associ
 
 It expects a JSON request body to be POST. The request body must look like:
 
-````
+```json
 {
-	"number": number_of_compute_resources,
+	"number": "number_of_compute_resources",
 	"compute": "compute_name"
 }
-````
+```
 
 The *number* field is mandatory.
 
@@ -153,6 +180,6 @@ If not specified, genisys will automatically pick up the first compute defined.
 
 Example:
 
-````
+```bash
 $ http POST :7001/service/myService/scale number=3 compute="local"
-````
+```
