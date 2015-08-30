@@ -74,8 +74,8 @@ def scale(service_name):
     scale_service(compute_definition, service_name, resource_number)
 
 
-def start_webserver(port):
-    run(host='localhost', port=port)
+def start_webserver(host, port):
+    run(host=host, port=port)
 
 
 if __name__ == '__main__':
@@ -84,7 +84,8 @@ if __name__ == '__main__':
     services = get_services(config['consul']['host'],
                             config['consul']['service_prefix'])
     try:
-        api_thread_args = dict(port=config['genisys']['port'])
+        api_thread_args = dict(host=config['genisys']['bind'],
+                               port=config['genisys']['port'])
         api_thread = threading.Thread(target=start_webserver,
                                       kwargs=api_thread_args).start()
         poller_thread_args = dict(config=config,

@@ -1,4 +1,7 @@
 genisys:
+  # Server address to bind to.
+  bind: 127.0.0.1
+
   # Application port
   port: 7001
 
