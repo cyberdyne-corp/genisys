@@ -1,21 +1,24 @@
 import time
 from humanfriendly import parse_timespan
-from consul import get_value_for_key
+from consulregistry import ConsulRegistry
 from connector import get_running_resources, scale_service
 from intelligency import select_compute_definition
 
 
-def poll_connectors(config, computes, services):
+def poll_connectors(config, computes):
+    consul = ConsulRegistry(config['consul']['host'],
+                            config['consul']['port'])
+    services = consul.get_services(config['consul']['service_prefix'])
     poll_interval = parse_timespan(config['connector']['poll_interval'])
     while True:
         for service in services:
-            ensure_resources_for_service(config['consul']['host'],
+            ensure_resources_for_service(consul,
                                          computes, service)
         time.sleep(poll_interval)
 
 
 def ensure_resources_for_service(consul, computes, service_name):
-    required_resources = get_value_for_key(consul, service_name + '/resources')
+    required_resources = consul.get_value_for_key(service_name + '/resources')
     if required_resources is not None:
         print('Ensure {} running resources for service {}'.format(
             required_resources, service_name))

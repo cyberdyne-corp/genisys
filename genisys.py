@@ -7,7 +7,6 @@ from utils import load_computes_from_file, load_configuration
 from intelligency import select_compute_definition
 from connector import scale_service
 from poller import poll_connectors
-from consul import get_services
 
 
 @get('/compute')
@@ -81,16 +80,13 @@ def start_webserver(host, port):
 if __name__ == '__main__':
     config = load_configuration('genisys.yml')
     computes = load_computes_from_file(config['genisys']['compute_file'])
-    services = get_services(config['consul']['host'],
-                            config['consul']['service_prefix'])
     try:
         api_thread_args = dict(host=config['genisys']['bind'],
                                port=config['genisys']['port'])
         api_thread = threading.Thread(target=start_webserver,
                                       kwargs=api_thread_args).start()
         poller_thread_args = dict(config=config,
-                                  computes=computes,
-                                  services=services)
+                                  computes=computes)
         poller_thread = threading.Thread(target=poll_connectors,
                                          kwargs=poller_thread_args).start()
     except Exception:
