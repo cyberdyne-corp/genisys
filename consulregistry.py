@@ -17,9 +17,9 @@ class ConsulRegistry:
         return value
 
     def get_services(self, service_prefix):
-        managed_services = []
+        managed_services = set()
         index, services = self.client.catalog.services()
         for key, value in services.items():
             if key.startswith(service_prefix):
-                managed_services.append(key)
+                managed_services.add(key)
         return managed_services

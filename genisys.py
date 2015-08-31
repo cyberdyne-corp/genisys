@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import threading
+from queue import Queue
 from bottle import run, get, post, put, abort, request
 from utils import load_computes_from_file, load_configuration
 from intelligency import select_compute_definition
@@ -70,6 +71,9 @@ def scale(service_name):
             compute_definition = select_compute_definition(computes)
     except KeyError:
         abort(501, 'Undefined compute: {}.'.format(compute_name))
+    services = shared_queue.get()
+    services.add(service_name)
+    shared_queue.put(services)
     scale_service(compute_definition, service_name, resource_number)
 
 
@@ -80,13 +84,15 @@ def start_webserver(host, port):
 if __name__ == '__main__':
     config = load_configuration('genisys.yml')
     computes = load_computes_from_file(config['genisys']['compute_file'])
+    shared_queue = Queue(1)
     try:
         api_thread_args = dict(host=config['genisys']['bind'],
                                port=config['genisys']['port'])
         api_thread = threading.Thread(target=start_webserver,
                                       kwargs=api_thread_args).start()
         poller_thread_args = dict(config=config,
-                                  computes=computes)
+                                  computes=computes,
+                                  queue=shared_queue)
         poller_thread = threading.Thread(target=poll_connectors,
                                          kwargs=poller_thread_args).start()
     except Exception:

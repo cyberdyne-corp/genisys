@@ -26,7 +26,10 @@ genisys:
 
 consul:
   # Consul host
-  host: http://localhost:8500
+  host: localhost
+
+  # Consul port
+  port: 8500
 
   # Prefix for services managed by genisys
   service_prefix: 'skynet_'
