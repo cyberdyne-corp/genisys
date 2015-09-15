@@ -7,7 +7,8 @@ from intelligency import select_compute_definition
 
 def poll_connectors(config, computes, queue):
     consul = ConsulRegistry(config['consul']['host'],
-                            config['consul']['port'])
+                            config['consul']['port'],
+                            config['consul']['resources_key_prefix'])
     consul_services = consul.get_services(config['consul']['service_prefix'])
     queue.put(consul_services)
     poll_interval = parse_timespan(config['connector']['poll_interval'])
@@ -21,8 +22,7 @@ def poll_connectors(config, computes, queue):
 
 
 def ensure_resources_for_service(consul, computes, service_name):
-    required_resources = consul.get_value_for_key('skynet/resources/' +
-                                                  service_name)
+    required_resources = consul.get_value_for_key(service_name)
     if required_resources is not None:
         print('Ensure {} running resources for service {}'.format(
             required_resources, service_name))

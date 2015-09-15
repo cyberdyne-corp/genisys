@@ -4,10 +4,12 @@ import consul
 
 class ConsulRegistry:
 
-    def __init__(self, host, port):
+    def __init__(self, host, port, resources_key_prefix):
         self.client = consul.Consul(host=host, port=port)
+        self.resources_key_prefix = resources_key_prefix
 
-    def get_value_for_key(self, key):
+    def get_value_for_key(self, key_name):
+        key = ''.join([self.resources_key_prefix, key_name])
         index, data = self.client.kv.get(key)
         value = None
         if data is None:
