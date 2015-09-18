@@ -5,9 +5,8 @@ Genisys
    :target: https://imagelayers.io/?images=cyberdynesystems/genisys:latest
    :alt: imagelayers.io
 .. image:: https://readthedocs.org/projects/genisys/badge/?version=stable
-   :target: http://genisys.readthedocs.org/en/latest/?badge=stable
+   :target: http://genisys.readthedocs.org/en/stable/?badge=stable
    :alt: Documentation Status
-
 
 Genisys is one of the main components of the `Skynet`_ stack.
 
