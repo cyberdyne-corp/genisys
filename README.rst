@@ -1,6 +1,14 @@
 Genisys
 =======
 
+.. image:: https://badge.imagelayers.io/cyberdynesystems/genisys:latest.svg
+   :target: https://imagelayers.io/?images=cyberdynesystems/genisys:latest
+   :alt: imagelayers.io
+.. image:: https://readthedocs.org/projects/genisys/badge/?version=stable
+   :target: http://genisys.readthedocs.org/en/latest/?badge=stable
+   :alt: Documentation Status
+
+
 Genisys is one of the main components of the `Skynet`_ stack.
 
 It's main goal is to manage resources associated to a service.
