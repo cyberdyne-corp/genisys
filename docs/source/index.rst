@@ -18,6 +18,7 @@ Contents
    setup
    configuration
    api
+   connector
 
 Indices and tables
 ==================
